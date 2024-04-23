@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div>
+        <h2>{{comps}}</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Political Party</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for par, amount in dicto.items() %}
+                    <tr>
+                        <td>{{par}}</td>
+                        <td>{{amount}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h2>Total Donations: {{sum}}</h2>
+
+        <!-- Pie chart container -->
+        <canvas id="pieChart" width="400" height="400"></canvas>
+    </div>
+
+    <!-- JavaScript to initialize the Chart.js pie chart -->
+    <script>
+        // Prepare data for the pie chart
+        const labels = [{% for par, amount in dicto.items() %}'{{ par }}', {% endfor %}];
+        const data = [{% for par, amount in dicto.items() %}{{ amount }}, {% endfor %}];
+
+        // Get the canvas element
+        const ctx = document.getElementById('pieChart').getContext('2d');
+
+        // Create the pie chart
+        const pieChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels, // Political Party names
+                datasets: [{
+                    data: data, // Donation amounts
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF',
+                        '#FF9F40'
+                        // Add more colors if needed for additional data points
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

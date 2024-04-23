@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bond Purchase Website</title>
+  <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+</head>
+<body>
+  <header>
+    <h1>Bond Purchase Website</h1>
+  </header>
+
+  <main>
+    <form id="search-form" method="GET" action="/search">
+      <label for="table">Search Table:</label>
+      <select name="table" id="table" onchange="updateColumns()">
+        <option value="purchase">Purchase</option>
+        <option value="redemption">Redemption</option>
+      </select>
+
+      <label for="column">Search by:</label>
+      <select name="column" id="column">
+        <!-- This will be populated dynamically by JavaScript -->
+      </select>
+
+      <input type="text" name="query" id="search-query" placeholder="Enter your search query" required>
+
+      <button type="submit">Search</button>
+    </form>
+
+    <script>
+      // Define a JavaScript object to hold searchable columns for each table
+      const columnsByTable = {
+        purchase: ['sno', 'ref', 'journal_date', 'date_of_purchase', 'date_of_expiry', 'name_purchaser', 'prefix', 'bond_no', 'denominations', 'issue_branch_code', 'issue_teller'],
+        redemption: ['sno', 'date_encashment', 'party', 'acc_no', 'prefix', 'bond_no', 'denominations', 'pay_branch_code', 'pay_teller']
+      };
+
+      // Function to update the column options based on the selected table
+      function updateColumns() {
+        const tableSelect = document.getElementById('table');
+        const columnSelect = document.getElementById('column');
+        const selectedTable = tableSelect.value;
+
+        // Clear existing options
+        columnSelect.innerHTML = '';
+
+        // Add new options based on the selected table
+        columnsByTable[selectedTable].forEach(column => {
+          const option = document.createElement('option');
+          option.value = column;
+          option.textContent = column;
+          columnSelect.appendChild(option);
+        });
+      }
+
+      // Initialize the column options based on the default selected table
+      updateColumns();
+
+      // Function to filter the dropdown options based on the search input
+      function filterDropdown() {
+        const searchInput = document.getElementById('search-input').value.toLowerCase();
+        const dropdown = document.getElementById('donation-company');
+
+        // Iterate through the dropdown options
+        for (let i = 1; i < dropdown.options.length; i++) {
+          const option = dropdown.options[i];
+
+          // Check if the option text includes the search query
+          if (option.text.toLowerCase().includes(searchInput)) {
+            // Show the option if it matches the query
+            option.style.display = '';
+          } else {
+            // Hide the option if it does not match the query
+            option.style.display = 'none';
+          }
+        }
+      }
+
+      // Add event listener to search input to filter the dropdown as the user types
+      document.getElementById('search-query').addEventListener('input', filterDropdown);
+
+      // Function to handle form submission
+      function handleSubmit(event) {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+
+        // Get the selected value from the dropdown
+        const selectedCompany = document.getElementById('donation-company').value;
+
+        // Perform an action with the selected value (e.g., sending to the server, displaying an alert)
+        if (selectedCompany) {
+          alert(`Selected company: ${selectedCompany}`);
+          // You can add your code here to handle the form submission
+        } else {
+          alert("Please select a company.");
+        }
+      }
+
+      // Add event listener to the form for form submission
+      document.getElementById('search-form').addEventListener('submit', handleSubmit);
+    </script>
+
+    <section class="data-display">
+      <h2>Bond Purchase Data</h2>
+      <table>
+        <thead>
+          <tr>
+            <!-- Table headers will be populated dynamically -->
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Table body will be populated dynamically -->
+        </tbody>
+      </table>
+    </section>
+
+    <section class="analysis-section">
+      <h2>Bond Purchase Analysis</h2>
+
+      <div class="analysis-option">
+        <h3>By Company/Individual</h3>
+        <form id="company-form" method="GET" action="/company">
+          <!-- Dropdown menu for Company -->
+          <select id="donation-company">
+            <option value="">Select Company</option>
+            <!-- Dynamically populated options -->
+            {% for buy in buyer %}
+            <option value="{{ buy.name_purchaser }}">{{ buy.name_purchaser }}</option>
+            {% endfor %}
+          </select>
+
+          <!-- Search bar for filtering the dropdown -->
+          <input type="text" id="company-search-input" placeholder="Search company..." />
+
+          <!-- Submit button -->
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <div class="analysis-option">
+        <h3>By Political Party</h3>
+        <form id="party-form" method="GET" action="/party">
+          <!-- Search bar for filtering the dropdown -->
+          <input type="text" id="party-search-input" placeholder="Search party..." />
+
+          <!-- Dropdown menu for Political Party -->
+          <select id="party-select">
+            <option value="">Select Political Party</option>
+            <!-- Dynamically populated options -->
+            {% for party in parties %}
+            <option value="{{ party.party }}">{{ party.party }}</option>
+            {% endfor %}
+          </select>
+
+          <!-- Submit button -->
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <div class="analysis-option">
+        <h3>Party Donations by Company</h3>
+        <!-- Form for Party Donations by Company -->
+        <form id="party-company-form" method="GET" action="/ques">
+          <!-- Search bar for filtering the dropdown -->
+          <input type="text" id="party-company-search-input" placeholder="Search party..." />
+
+          <!-- Dropdown menu for Political Party -->
+          <select id="party-company-select">
+            <option value="">Select Political Party</option>
+            <!-- Dynamically populated options -->
+            {% for party in parties %}
+            <option value="{{ party.party }}">{{ party.party }}</option>
+            {% endfor %}
+          </select>
+
+          <!-- Submit button -->
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <div class="analysis-option">
+        <h3>Company Donations by Party</h3>
+        <!-- Form for Company Donations by Party -->
+        <form id="company-party-form" method="GET" action="/ans">
+          <!-- Dropdown menu for Company -->
+          <select id="company-select">
+            <option value="">Select Company</option>
+            <!-- Dynamically populated options -->
+            {% for buy in buyer %}
+            <option value="{{ buy.name_purchaser }}">{{ buy.name_purchaser }}</option>
+            {% endfor %}
+          </select>
+
+          <!-- Search bar for filtering the dropdown -->
+          <input type="text" id="company-search-input" placeholder="Search company..." />
+
+          <!-- Submit button -->
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <div class="analysis-option">
+        <h3>Donation Distribution</h3>
+        <div id="donation-pie-chart"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

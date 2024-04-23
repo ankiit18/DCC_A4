@@ -1,0 +1,66 @@
+/* Reset and default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+}
+
+html,body{
+    height: 100%;
+    width: 100%;
+}
+
+/* Header styles */
+header{
+    text-align: center;
+    padding: 10px 100px;
+    background-color: #87CEEB; /* Light blue */
+}
+
+header h1{
+    font-size: 50px;
+    color: #000080; /* Navy blue */
+    border-bottom: 2px solid #1E90FF; /* Dodger blue */
+    padding-bottom: 10px;
+}
+
+/* Main section styles */
+main{
+    position: absolute;
+    bottom: 0;
+    height: 90vh;
+    width: 100%;
+    padding: 3vh;
+    display: flex;
+    flex-direction: column;
+    gap: 9vh;
+}
+
+/* Button styles */
+.button, .button-b {
+    background-color: #00BFFF; /* Deep sky blue */
+    border: none;
+    padding: 1vh 2vh;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+}
+
+.button:hover, .button-b:hover { 
+    transition: all linear ease 0.1s;
+    background-color: #1E90FF; /* Dodger blue */
+    cursor: pointer;
+}
+
+/* Input and dropdown styles */
+input, select {
+    height: 3.5vh;
+    width: 15vw;
+    text-align: center;
+    border: 2px solid #1E90FF; /* Dodger blue */
+}
+
+input:hover, select:hover {
+    border: 2px solid #00BFFF; /* Deep sky blue */
+}

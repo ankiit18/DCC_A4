@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Yearly Totals</title>
+    <!-- Include Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .yearly-totals{
+            display: flex;
+            flex-wrap: wrap;
+            /* flex-direction: column; */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="yearly-totals">
+        <!-- Create a table to display totals for each year -->
+        <table>
+            <!-- Table headers -->
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Total Bonds</th>
+                    <th>Total Value</th>
+                </tr>
+            </thead>
+            <!-- Table body -->
+            <tbody>
+                {% for year, totals in year_totals.items() %}
+                <tr>
+                    <td>{{ year }}</td>
+                    <td>{{ totals.total_count }}</td>
+                    <td>{{ totals.total_sum }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+
+    <!-- Container for the Total Bonds vs. Year bar chart -->
+    <canvas id="totalBondsChart" width="400" height="200"></canvas>
+
+    <!-- Container for the Total Value vs. Year bar chart -->
+    <canvas id="totalValueChart" width="400" height="200"></canvas>
+
+    <!-- JavaScript to render the charts -->
+    <script>
+        // Prepare data for the charts
+        const years = [];
+        const totalBonds = [];
+        const totalValue = [];
+        
+        {% for year, totals in year_totals.items() %}
+            years.push("{{ year }}");
+            totalBonds.push({{ totals.total_count }});
+            totalValue.push({{ totals.total_sum }});
+        {% endfor %}
+        
+        // Create the Total Bonds vs. Year bar chart
+        const ctxBonds = document.getElementById('totalBondsChart').getContext('2d');
+        const bondsChart = new Chart(ctxBonds, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'Total Bonds',
+                        data: totalBonds,
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Bonds'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Create the Total Value vs. Year bar chart
+        const ctxValue = document.getElementById('totalValueChart').getContext('2d');
+        const valueChart = new Chart(ctxValue, {
+            type: 'bar',
+            data: {
+                labels: years,
+                datasets: [
+                    {
+                        label: 'Total Value',
+                        data: totalValue,
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Total Value'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
